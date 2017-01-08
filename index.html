@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en" ng-app="todoApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <script src="node_modules/angular/angular.min.js"></script>
+</head>
+<body>
+    <todo-list></todo-list>
+
+    <script type="text/ng-template" id="todomvc-index.html">
+        <section>
+            <div class="container">
+                <h1>Todo List</h1>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form ng-submit="$ctrl.createList(listName)" class="form-inline">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text"
+                                       ng-model="listName"
+                                       name="name"
+                                       class="form-control"
+                                       id="name"
+                                       placeholder="Tuesday"
+                                       ng-minlength="3"
+                                       required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create New List</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="container">
+                <div class="form-group">
+                    <label>Search List <input type="search" ng-model="search.name"></label>
+                </div>
+                <hr>
+                <div class="row">
+                    <div ng-repeat="list in $ctrl.lists | filter:search:strict track by $index" ng-init="listIndex = $index" class="col-md-4">
+                        <h2>{{ list.name }} <button class="btn btn-danger" ng-click="$ctrl.deleteList($index)">Delete List</button></h2>
+                        <p></p>
+                        <div ng-if="list.todos.length" class="btn-group">
+                            <button type="button" ng-click="list.show = false" class="btn btn-primary">Show Completed</button>
+                            <button type="button" ng-click="list.show = true" class="btn btn-primary">Show Uncompleted</button>
+                            <button type="button" ng-click="list.show = null" class="btn btn-primary">Show All</button>
+                        </div>
+                        <p></p>
+                        <ul ng-if="list.todos.length" class="list-group todo-list">
+                            <li ng-repeat="todo in list.todos | filter:search:strict track by $index"
+                                ng-init="todosIndex = $index"
+                                ng-hide="$ctrl.showHide(list, todo)"
+                                    class="list-group-item todo-item animate-show-hide">
+                                <div class="checkbox">
+                                <label class="">
+                                    <input type="checkbox" ng-model="todo.done">
+                                    <span class="done-{{todo.done}}">{{todo.text}}</span>
+                                </label>
+                                </div>
+                                <button class="destroy" ng-click="$ctrl.removeTodo(listIndex, todosIndex)">x</button>
+                            </li>
+                        </ul>
+                        <button type="button"
+                                class="btn btn-success"
+                                ng-if="list.todos.length"
+                                ng-click="$ctrl.archive(listIndex);"
+                        >Move Completed items to Archive
+                        </button>
+                        <hr>
+                        <form name="addTodo{{$index}}" id="addTodo{{$index}}" ng-submit="$ctrl.addTodo($index)">
+                            <div class="form-group">
+                                <label for="text{{$index}}">Add Todo</label>
+                                <input type="text" ng-model="$ctrl.todoText"
+                                       id="text{{$index}}"
+                                       name="text"
+                                       size="30"
+                                       class="form-control"
+                                       placeholder="add new todo here"
+                                required>
+                            </div>
+                            <input class="btn-primary btn" type="submit" value="Add New Todo">
+                        </form>
+                        <br>
+                        <hr>
+                        <div class="form-group">
+                            <label>Search TODO <input type="search" ng-model="search.text"></label>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                                 aria-valuenow="{{$ctrl.showCount($index)}}" aria-valuemin="0" aria-valuemax="{{list.todos.length}}" ng-style="list.percentage">
+                                {{$ctrl.showCount($index)}}0% Complete (success)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </script>
+    <script src="node_modules/angular-animate/angular-animate.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/components/todo.component.js"></script>
+</body>
+</html>
